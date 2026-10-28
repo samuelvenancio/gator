@@ -121,7 +121,3 @@ gator agg 1m
 ## Development notes
 
 This project uses the default Go standard library and PostgreSQL via `lib/pq`. The migration files under `sql/schema` are the source of truth for the database structure, and they are intended to be managed with Goose.
-
-## Publishing to GitHub
-
-When you are ready to share the project, push it to a public Git repository and submit the repository URL. The app is ready to be built and installed as a normal Go binary once the database and config are in place.
