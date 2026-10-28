@@ -8,8 +8,13 @@ Before running Gator, make sure you have:
 
 - Go installed
 - PostgreSQL installed and running
+- Goose installed for database migrations
 
-You can install Go from the official Go website, and PostgreSQL from your operating system package manager or the official PostgreSQL distribution.
+You can install Go from the official Go website, and PostgreSQL from your operating system package manager or the official PostgreSQL distribution. For Goose, install it with:
+
+```bash
+go install github.com/pressly/goose/v3/cmd/goose@latest
+```
 
 ## Install the CLI
 
@@ -33,7 +38,7 @@ go build .
 
 > Remember: `go run` is for development. `go build` and `go install` produce a standalone binary that you can run without the Go toolchain installed.
 
-## Set up PostgreSQL
+## Set up PostgreSQL with Goose
 
 Create a database for the app:
 
@@ -41,15 +46,13 @@ Create a database for the app:
 createdb gator
 ```
 
-Then apply the schema files in order from `sql/schema`:
+The project already includes Goose migration files in `sql/schema`, so use Goose instead of applying the SQL files manually:
 
 ```bash
-psql -d gator -f sql/schema/001_users.sql
-psql -d gator -f sql/schema/002_feeds.sql
-psql -d gator -f sql/schema/003_feed_follows.sql
-psql -d gator -f sql/schema/004_add_last_fetched_at_feeds.sql
-psql -d gator -f sql/schema/005_posts.sql
+goose -dir sql/schema postgres "postgres://postgres:postgres@localhost:5432/gator?sslmode=disable" up
 ```
+
+This runs the migration chain in the correct order and keeps the schema management aligned with the project conventions.
 
 ## Configure Gator
 
@@ -117,7 +120,7 @@ gator agg 1m
 
 ## Development notes
 
-This project uses the default Go standard library and PostgreSQL via `lib/pq`. The schema files under `sql/schema` are the source of truth for the database structure.
+This project uses the default Go standard library and PostgreSQL via `lib/pq`. The migration files under `sql/schema` are the source of truth for the database structure, and they are intended to be managed with Goose.
 
 ## Publishing to GitHub
 
